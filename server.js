@@ -72,7 +72,7 @@ io.on("connection", (socket) => {
 				let str = "ONLINE: " + arr;
 				socket.emit("chat message", str);
 			}
-				
+			else				
 			if(msg.includes("/history"))
 			{
 				socket.emit("chat message", "HISTORY: ### (" + history.length + " lines)");
@@ -81,12 +81,7 @@ io.on("connection", (socket) => {
 
 				socket.emit("chat message", "#######");
 			}
-
-			if(msg.includes("/weather"))
-			{
-				socket.emit("chat message", "Varmaanki myrskysää. Ehkä aurinko paistaa. Kato ulos!");
-			}
-
+			else
 			if(msg.includes("/msg")) // privaviesti
 			{
 				let arr = msg.split(" ", 1000);
@@ -103,22 +98,29 @@ io.on("connection", (socket) => {
 					{
 						let arrID = Array.from(users.keys()); // id:t
 						let usrID = arrID[q];
-						let client = ids.get(usrID);
+						let otherClient = ids.get(usrID);
 
-						if(client != null)
+						if(otherClient != null)
 						{
 							let dt = new Date().toLocaleTimeString();
-							msg = "(private message from " + arr[0] + ") ["+dt+"]  " + str;
-							console.log(msg);
-							socket.emit("chat message", msg); // viesti näkyviin itelle
-							client.emit("chat message", msg); // viesti toiselle
+							socket.emit("chat message", "(private message to "+to+") ["+dt+"]  " + str); // viesti näkyviin itelle
+							
+							otherClient.emit("chat message", "(private message from " + arr[0] + ") ["+dt+"]  " + str); // viesti toiselle
+							
+							// console.log( blah blah ); jos haluaa servulogiin privaviestitkin
+							
 							return;
 						}
 					}
 				}
-				
 				socket.emit("chat message", to + " user not found.");
 			}
+			else
+			if(msg.includes("/weather"))
+			{
+				socket.emit("chat message", "Varmaanki myrskysää. Ehkä aurinko paistaa. Kato ulos!");
+			}
+			
 
 			return; // jos käytetty  /jotain  niin se rivi ei näy muille joten pois
 		}
