@@ -56,7 +56,6 @@ io.on("connection", (socket) => {
 	socket.on("chat message", (msg) => {
 		if(msg.includes("joined"))
 		{
-			// NOTE: koska tehty näin niin nimessä ei sais olla välilyöntejä, vain eka alkio otetaan käyttöön (arr[0])
 			let arr = msg.split(" ", 2);
 			users.set(socket.id, arr[0]); // lisää nimi hashmappiin [id, name]
 			msg += " ###";
@@ -98,12 +97,10 @@ io.on("connection", (socket) => {
 				let to = arr[2];
 				arr = Array.from(users.values()); // nimet
 
-				let found = false;
 				for(let q=0; q<arr.length; q++)
 				{
 					if(arr[q].includes(to))
 					{
-						found = true;
 						let arrID = Array.from(users.keys()); // id:t
 						let usrID = arrID[q];
 						let client = ids.get(usrID);
@@ -115,17 +112,12 @@ io.on("connection", (socket) => {
 							console.log(msg);
 							socket.emit("chat message", msg); // viesti näkyviin itelle
 							client.emit("chat message", msg); // viesti toiselle
-							break;
+							return;
 						}
 					}
 				}
 				
-				if(found == false)
-				{
-					socket.emit("chat message", to + " user not found.");
-					return;
-				}					
-
+				socket.emit("chat message", to + " user not found.");
 			}
 
 			return; // jos käytetty  /jotain  niin se rivi ei näy muille joten pois
