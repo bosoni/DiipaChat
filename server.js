@@ -31,7 +31,7 @@ io.on("connection", (socket) => {
 	
 	socket.emit("chat message", "#write  /users  to see who is online");
 	socket.emit("chat message", "#write  /beep  to turn beep sounds on/off  (default: ON)");
-	socket.emit("chat message", "#write  /history  to see history (you should turn beep sounds off)");
+	socket.emit("chat message", "#write  /history  to see history");
 	socket.emit("chat message", "#write  /msg  user_name  message  to send private messages to other users");
 	socket.emit("chat message", "##########");
 
@@ -75,11 +75,11 @@ io.on("connection", (socket) => {
 			else				
 			if(msg.includes("/history"))
 			{
-				socket.emit("chat message", "HISTORY: ### (" + history.length + " lines)");
+				socket.emit("chat message", "HISTORY: <<### (" + history.length + " lines)");
 				for(let q=0; q<history.length; q++)
 					socket.emit("chat message", history[q]);
 
-				socket.emit("chat message", "#######");
+				socket.emit("chat message", "#########>>");
 			}
 			else
 			if(msg.includes("/msg")) // privaviesti

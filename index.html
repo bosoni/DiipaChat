@@ -24,6 +24,7 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
 	let sound = true;
+	let soundTemp = false;
 	
 	let name = "";
 	while(true)
@@ -78,6 +79,15 @@
 	});
 
 	socket.on('chat message', function(msg) {
+		
+		if(msg.includes("HISTORY: <<### ("))
+		{
+			soundTemp = sound;
+			sound = false;
+		}
+		if(msg.includes("#########>>"))
+			sound = soundTemp;
+	
 		let item = document.createElement('li');
 		item.textContent = msg;
 		messages.appendChild(item);
