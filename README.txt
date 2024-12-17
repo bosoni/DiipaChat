@@ -6,9 +6,9 @@ SERVER
 First time:
  install nodejs
  start  _INSTALL_.bat
- start  _START_SERVER_.bat
 
-other times  _START_SERVER_.bat  is enough.
+ 
+ start  _START_SERVER_.bat
 
 
 

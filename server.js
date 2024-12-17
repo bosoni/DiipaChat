@@ -75,26 +75,26 @@ io.on("connection", (socket) => {
 			else				
 			if(msg.includes("/history"))
 			{
-				socket.emit("chat message", "HISTORY: <<### (" + history.length + " lines)");
+				socket.emit("chat message", "<### HISTORY: (" + history.length + " lines)");
 				for(let q=0; q<history.length; q++)
 					socket.emit("chat message", history[q]);
 
-				socket.emit("chat message", "#########>>");
+				socket.emit("chat message", "###/>");
 			}
 			else
 			if(msg.includes("/msg")) // privaviesti
 			{
-				let arr = msg.split(" ", 1000);
+				let msgArr = msg.split(" ", 1000);
 				let str = "";
-				for(let q=3; q<arr.length; q++)
-					str += arr[q] + " ";
+				for(let q=3; q<msgArr.length; q++)
+					str += msgArr[q] + " ";
 
-				let to = arr[2];
-				arr = Array.from(users.values()); // nimet
+				let to = msgArr[2];  // nick:[0]  /msg[1]  /user_name[2]
+				let namesArr = Array.from(users.values()); // nimet
 
-				for(let q=0; q<arr.length; q++)
+				for(let q=0; q<namesArr.length; q++)
 				{
-					if(arr[q].includes(to))
+					if(namesArr[q].includes(to))
 					{
 						let arrID = Array.from(users.keys()); // id:t
 						let usrID = arrID[q];
@@ -105,9 +105,9 @@ io.on("connection", (socket) => {
 							let dt = new Date().toLocaleTimeString();
 							socket.emit("chat message", "(private message to "+to+") ["+dt+"]  " + str); // viesti näkyviin itelle
 							
-							otherClient.emit("chat message", "(private message from " + arr[0] + ") ["+dt+"]  " + str); // viesti toiselle
+							otherClient.emit("chat message", "(private message from " + msgArr[0] + ") ["+dt+"]  " + str); // viesti toiselle
 							
-							// console.log( blah blah ); jos haluaa servulogiin privaviestitkin
+							// console.log( blah blah ); jos haluaa servulogiin privaviestitkin  (msgArr[0] -> to) 
 							
 							return;
 						}
@@ -119,8 +119,7 @@ io.on("connection", (socket) => {
 			if(msg.includes("/weather"))
 			{
 				socket.emit("chat message", "Varmaanki myrskysää. Ehkä aurinko paistaa. Kato ulos!");
-			}
-			
+			}			
 
 			return; // jos käytetty  /jotain  niin se rivi ei näy muille joten pois
 		}
