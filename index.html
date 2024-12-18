@@ -88,31 +88,25 @@
 	
 		let item = document.createElement('li');
 		
-		if(msg.includes("www.") || msg.includes("http"))
+		let arr = msg.split(" ");
+		let str = "";
+
+		for(let q=0; q<arr.length; q++)
 		{
-			let arr = msg.split(" ");
-			let str = "";
-			
-			for(let q=0; q<arr.length; q++)
+			if((arr[q].includes("www.") || arr[q].includes("http"))) // && !arr[q].includes("href"))
 			{
-				if(arr[q].includes("www.") || arr[q].includes("http"))
-				{
-					str += " <a href='";
+				str += " <a href='";
 
-					if(arr[q].includes("http") == false)
-						str += "https://";
+				if(arr[q].includes("http") == false)
+					str += "https://";
 
-					str += arr[q] + "'>  LINK  </a> ";
-				}
-				else
-					str += arr[q];
+				str += arr[q] + "'>  LINK  </a> ";
 			}
-			item.innerHTML = str;
+			else
+				str += arr[q] + " ";
 		}
-		else
-		{
-			item.textContent = msg;
-		}
+		item.innerHTML = str;
+	
 		messages.appendChild(item);
 		window.scrollTo(0, document.body.scrollHeight);
 		
