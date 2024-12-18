@@ -56,7 +56,7 @@ io.on("connection", (socket) => {
 	socket.on("chat message", (msg) => {
 		if(msg.includes("joined"))
 		{
-			let arr = msg.split(" ", 2);
+			let arr = msg.split(" ");
 			users.set(socket.id, arr[0]); // lisää nimi hashmappiin [id, name]
 			msg += " ###";
 		}
@@ -84,7 +84,7 @@ io.on("connection", (socket) => {
 			else
 			if(msg.includes("/msg")) // privaviesti
 			{
-				let msgArr = msg.split(" ", 1000);
+				let msgArr = msg.split(" ");
 				let str = "";
 				for(let q=3; q<msgArr.length; q++)
 					str += msgArr[q] + " ";

@@ -87,7 +87,32 @@
 			sound = soundTemp;
 	
 		let item = document.createElement('li');
-		item.textContent = msg;
+		
+		if(msg.includes("www.") || msg.includes("http"))
+		{
+			let arr = msg.split(" ");
+			let str = "";
+			
+			for(let q=0; q<arr.length; q++)
+			{
+				if(arr[q].includes("www.") || arr[q].includes("http"))
+				{
+					str += " <a href='";
+
+					if(arr[q].includes("http") == false)
+						str += "https://";
+
+					str += arr[q] + "'>  LINK  </a> ";
+				}
+				else
+					str += arr[q];
+			}
+			item.innerHTML = str;
+		}
+		else
+		{
+			item.textContent = msg;
+		}
 		messages.appendChild(item);
 		window.scrollTo(0, document.body.scrollHeight);
 		
