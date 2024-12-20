@@ -95,12 +95,12 @@
 		{
 			if((arr[q].includes("www.") || arr[q].includes("http"))) // && !arr[q].includes("href"))
 			{
-				str += " <a href='";
+				str += " <a href=' ";
 
 				if(arr[q].includes("http") == false)
 					str += "https://";
 
-				str += arr[q] + "'  target='_blank'> "+ arr[q] + " </a> ";
+				str += arr[q] + "'  target='_blank'> " + arr[q] + " </a> ";
 			}
 			else
 				str += arr[q] + " ";
