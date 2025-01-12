@@ -16,7 +16,8 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-	console.log("user connected  -- ID: " + socket.id + "    IP: " + socket.handshake.address);
+	let dt = new Date();
+	console.log("user connected " + dt + "  -- ID: " + socket.id + "    IP: " + socket.handshake.address);
 
 	socket.emit("chat message", "Welcome to DiipaChat ");
 
@@ -26,7 +27,6 @@ io.on("connection", (socket) => {
 
 	users.set(socket.id, socket.id); // NOTE: id and name are the same for now
 	ids.set(socket.id, socket);
-	
 	
 	socket.emit("chat message", "#write  /users  to see who is online");
 	socket.emit("chat message", "#write  /beep  to turn beep sounds on/off  (default: ON)");
@@ -41,7 +41,7 @@ io.on("connection", (socket) => {
 		socket.emit("chat message", history[q]);
 	
 	socket.on("disconnect", () => {
-		let dt = new Date().toLocaleTimeString();
+		let dt = new Date();
 		let str = "["+dt+"] " + users.get(socket.id) + " disconnected ###";
 		console.log(str + " -- id: " + socket.id);
 		io.emit("chat message", str);
@@ -54,18 +54,18 @@ io.on("connection", (socket) => {
 	socket.on("chat message", (msg) => {
 		if(msg.includes("joined"))
 		{
+			let dt = new Date();
 			let arr = msg.split(" ");
 			users.set(socket.id, arr[0]); // add name to hashmap [id, name]
-			msg += " ###";
+			msg += " ### " + dt;
+			
+			console.log(" [[" + dt + "   " + arr[0] + "  ID: " + socket.id + "]]"); // voi yhdistää ID:n ja IP:n
 		}
 
 		if(msg.includes(": /"))   // name: /  <- if message includes : / for some reason, it does not be written to public 
 		{
 			if(msg.includes("/users"))
 			{
-				//console.log("KEYS: "+ Array.from(users.keys()));
-				//console.log("VALUES: "+ Array.from(users.values()));
-					
 				let arr = Array.from(users.values());
 				let str = "ONLINE: " + arr;
 				socket.emit("chat message", str);
@@ -87,8 +87,8 @@ io.on("connection", (socket) => {
 				for(let q=3; q<msgArr.length; q++)
 					str += msgArr[q] + " ";
 
-				let to = msgArr[2];  // nick:[0]  /msg[1]  /user_name[2]
-				let namesArr = Array.from(users.values()); // nimet
+				let to = msgArr[2];  // nick:[0]  /msg[1]  user_name[2]
+				let namesArr = Array.from(users.values()); // names
 
 				for(let q=0; q<namesArr.length; q++)
 				{
@@ -105,7 +105,8 @@ io.on("connection", (socket) => {
 							
 							otherClient.emit("chat message", "(private message from " + msgArr[0] + ") ["+dt+"]  " + str); // viesti toiselle
 							
-							// console.log( blah blah ); jos haluaa servulogiin privaviestitkin  (msgArr[0] -> to) 
+							// privmesg to servlog ---
+							//console.log("   [[ " + new Date() + ": privatemsg " + msgArr[0] + "->" + to + "]: " + str + "] ------ ");
 							
 							return;
 						}
