@@ -1,6 +1,6 @@
 #!/bin/bash
 
 cd /home/server/Desktop/DiipaChat
-node server.js  >  LOG.txt
+node server.js  >>  LOG.txt
 
 

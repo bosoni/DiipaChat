@@ -16,25 +16,23 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-	console.log("user connected  -- id: " + socket.id);
-	users.set(socket.id, socket.id); // NOTE: id ja nimi sama toistaseks
+	console.log("user connected  -- ID: " + socket.id + "    IP: " + socket.handshake.address);
+
+	socket.emit("chat message", "Welcome to DiipaChat ");
+
+	let arr = Array.from(users.values());
+	let str = "OTHER USERS ONLINE: " + arr;
+	socket.emit("chat message", str);
+
+	users.set(socket.id, socket.id); // NOTE: id and name are the same for now
 	ids.set(socket.id, socket);
 	
-	socket.emit("chat message", "Welcome to DiipaChat ");
-	
-	// NOTE: allaoleva näyttäis uuden tulokkaan id:n eikä nimeä joten kommentoitu pois
-	/*
-	let arr = Array.from(users.values());
-	let str = "ONLINE: " + arr;
-	socket.emit("chat message", str);
-	*/
 	
 	socket.emit("chat message", "#write  /users  to see who is online");
 	socket.emit("chat message", "#write  /beep  to turn beep sounds on/off  (default: ON)");
 	socket.emit("chat message", "#write  /history  to see history");
 	socket.emit("chat message", "#write  /msg  user_name  message  to send private messages to other users");
 	socket.emit("chat message", "##########");
-
 	
 	let start = history.length - 5;
 	if(start < 0) start = 0;
@@ -57,11 +55,11 @@ io.on("connection", (socket) => {
 		if(msg.includes("joined"))
 		{
 			let arr = msg.split(" ");
-			users.set(socket.id, arr[0]); // lisää nimi hashmappiin [id, name]
+			users.set(socket.id, arr[0]); // add name to hashmap [id, name]
 			msg += " ###";
 		}
 
-		if(msg.includes(": /"))   // name: /  <- jos viestissä esiintyy : / jostain syystä, se ei näy kenellekään
+		if(msg.includes(": /"))   // name: /  <- if message includes : / for some reason, it does not be written to public 
 		{
 			if(msg.includes("/users"))
 			{
@@ -82,7 +80,7 @@ io.on("connection", (socket) => {
 				socket.emit("chat message", "###/>");
 			}
 			else
-			if(msg.includes("/msg")) // privaviesti
+			if(msg.includes("/msg")) // privatemessage
 			{
 				let msgArr = msg.split(" ");
 				let str = "";
@@ -121,7 +119,7 @@ io.on("connection", (socket) => {
 				socket.emit("chat message", "Varmaanki myrskysää. Ehkä aurinko paistaa. Kato ulos!");
 			}			
 
-			return; // jos käytetty  /jotain  niin se rivi ei näy muille joten pois
+			return; // if used /something, that line does not show to anyone
 		}
 		
 		let dt = new Date().toLocaleTimeString();
